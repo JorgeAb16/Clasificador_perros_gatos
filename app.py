@@ -6,7 +6,7 @@ import tensorflow as tf
 from PIL import Image
 
 st.set_page_config(page_title="Clasificador Perros y Gatos IA Jorge Abraham Fajardo 20231900189", layout="centered")
-st.title("Modelo predictivo Perros y Gatos - Clase de IA")
+st.title("Modelo predictivo Perros y Gatos - Clase de IA Jorge Abraham Fajardo 20231900189")
 st.write("Suba una imagen para clasificar con el Modelo MobileNetV2 pre-entrenado")
 
 IMG_SIZE = (224, 224)
