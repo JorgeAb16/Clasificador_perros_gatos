@@ -197,7 +197,24 @@ else:
     st.image(imagen, caption="Imagen analizada", use_container_width=True)
 
     
-    st.markdown("<br>**Predicción**", unsafe_allow_html=True)
+    st.markdown("""
+<div style="text-align:center; margin: 1.5rem 0 0.5rem;">
+    <span style="
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #b0aed0;
+    ">Resultado del análisis</span>
+    <div style="
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #f7971e, #ffd200);
+        border-radius: 999px;
+        margin: 0.4rem auto 0;
+    "></div>
+</div>
+""", unsafe_allow_html=True)
     st.markdown(f"""
     <div class="result-card">
          <div class="result-emoji">{emoji}</div>
