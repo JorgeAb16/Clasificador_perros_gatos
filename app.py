@@ -171,7 +171,7 @@ st.markdown("""
     <p>Clasificador de imágenes con Transfer Learning — MobileNetV2</p>
 </div>
 <div style="text-align:center">
-    <span class="badge">👤 Jorge Abraham Fajardo López · 20231900189 · IA 2026</span>
+    <span class="badge">Jorge Abraham Fajardo López · 20231900189</span>
 </div>
 """, unsafe_allow_html=True)
 
