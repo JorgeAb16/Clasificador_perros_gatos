@@ -7,7 +7,9 @@ from PIL import Image
 
 st.set_page_config(page_title="Clasificador Perros y Gatos IA", layout="centered")
 st.title("Modelo predictivo Perros y Gatos - Clase de IA")
-st.write("Suba una imagen para clasificar con el Modelo MobileNetV2 pre-entrenado")
+st.write("Suba una imagen para clasificar con el Modelo MobileNetV2 pre-entrenado 
+Jorge Abraham Fajardo
+20231900189")
 
 IMG_SIZE = (224, 224)
 MODEL_PATHS = [
