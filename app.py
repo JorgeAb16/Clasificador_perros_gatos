@@ -204,7 +204,6 @@ else:
         <div class="result-card">
             <div class="result-emoji">{emoji}</div>
             <div class="result-label">{top_label}</div>
-            <div class="result-conf">Confianza: {top_conf:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
 
