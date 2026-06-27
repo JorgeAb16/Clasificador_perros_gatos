@@ -196,6 +196,8 @@ else:
 
     st.image(imagen, caption="Imagen analizada", use_container_width=True)
 
+    
+    st.markdown("<br>**Predicción**", unsafe_allow_html=True)
     st.markdown(f"""
     <div class="result-card">
          <div class="result-emoji">{emoji}</div>
