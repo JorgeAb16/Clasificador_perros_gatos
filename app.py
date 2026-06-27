@@ -208,14 +208,6 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("<br>**Probabilidades**", unsafe_allow_html=True)
-        for label, prob in resultados:
-            bar_class = BAR_CLASS.get(label, "bar-fill-perro")
-            st.markdown(f"""
-            <div class="bar-label"><span>{EMOJIS.get(label,"")} {label}</span><span>{prob:.1f}%</span></div>
-            <div class="bar-track"><div class="{bar_class}" style="width:{prob:.1f}%"></div></div>
-            """, unsafe_allow_html=True)
-
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">
