@@ -194,18 +194,14 @@ else:
     top_conf   = resultados[0][1]
     emoji      = EMOJIS.get(top_label, "🐾")
 
-    col1, col2 = st.columns([1, 1], gap="large")
+    st.image(imagen, caption="Imagen analizada", use_container_width=True)
 
-    with col1:
-        st.image(imagen, caption="Imagen analizada", use_container_width=True)
-
-    with col2:
-        st.markdown(f"""
-        <div class="result-card">
-            <div class="result-emoji">{emoji}</div>
-            <div class="result-label">{top_label}</div>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="result-card">
+         <div class="result-emoji">{emoji}</div>
+         <div class="result-label">{top_label}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("""
