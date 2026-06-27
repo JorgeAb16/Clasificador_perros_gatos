@@ -5,30 +5,140 @@ import streamlit as st
 import tensorflow as tf
 from PIL import Image
 
-st.set_page_config(page_title="Clasificador Perros y Gatos IA Jorge Abraham Fajardo 20231900189", layout="centered")
-st.title("Modelo predictivo Perros y Gatos - Clase de IA Jorge Abraham Fajardo 20231900189")
-st.write("Suba una imagen para clasificar con el Modelo MobileNetV2 pre-entrenado")
+st.set_page_config(
+    page_title="Clasificador Perros y Gatos",
+    page_icon="🐾",
+    layout="centered"
+)
 
-IMG_SIZE = (224, 224)
-MODEL_PATHS = [
-    Path("modelo_perros_gatos.keras"),
-    Path("modelo_perros_gatos.h5"),
-]
-CLASS_PATH = Path("clases.json")
+# ── Estilos ──────────────────────────────────────────────────────────────────
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-# --- DICCIONARIO DE TRADUCCIÓN ---
-LABELS_ES = {
-    "Gatos": "Gato",
-    "Perros": "Perro",
+html, body, [class*="css"] {
+    font-family: 'Poppins', sans-serif;
 }
 
-# --- FUNCIONES DE CARGA ---
+.stApp {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #f0f0f0;
+}
+
+.hero {
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+}
+.hero h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #f7971e, #ffd200);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.2rem;
+}
+.hero p {
+    color: #b0aed0;
+    font-size: 0.95rem;
+    margin-top: 0;
+}
+
+.badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 999px;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    color: #d4d0f0;
+    margin-bottom: 1.5rem;
+}
+
+.upload-box {
+    background: rgba(255,255,255,0.05);
+    border: 2px dashed rgba(247,151,30,0.5);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.result-card {
+    background: rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-top: 1.5rem;
+}
+.result-emoji {
+    font-size: 4rem;
+    margin-bottom: 0.3rem;
+}
+.result-label {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffd200;
+}
+.result-conf {
+    font-size: 1rem;
+    color: #b0aed0;
+    margin-top: 0.2rem;
+}
+
+.bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #c0bde0;
+    margin-bottom: 0.2rem;
+    margin-top: 0.8rem;
+}
+.bar-track {
+    background: rgba(255,255,255,0.1);
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+}
+.bar-fill-perro {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #f7971e, #ffd200);
+}
+.bar-fill-gato {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #7f7fd5, #91eae4);
+}
+
+.footer {
+    text-align: center;
+    color: #5c5a7a;
+    font-size: 0.78rem;
+    margin-top: 3rem;
+    padding-bottom: 1rem;
+}
+
+#MainMenu, footer, header {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
+
+# ── Constantes ────────────────────────────────────────────────────────────────
+IMG_SIZE    = (224, 224)
+MODEL_PATHS = [Path("modelo_perros_gatos.keras"), Path("modelo_perros_gatos.h5")]
+CLASS_PATH  = Path("clases.json")
+
+LABELS_ES = {"Gatos": "Gato", "Perros": "Perro"}
+EMOJIS    = {"Gato": "🐱", "Perro": "🐶"}
+BAR_CLASS = {"Gato": "bar-fill-gato", "Perro": "bar-fill-perro"}
+
+# ── Carga de modelo ───────────────────────────────────────────────────────────
 @st.cache_resource
 def cargar_modelo():
     for path in MODEL_PATHS:
         if path.exists():
             return tf.keras.models.load_model(path, compile=False)
-    st.error("No se encontró el modelo. Asegúrese de que modelo_perros_gatos.h5 esté junto a app.py.")
+    st.error("No se encontró el modelo. Coloca modelo_perros_gatos.keras junto a app.py.")
     st.stop()
 
 @st.cache_data
@@ -46,23 +156,70 @@ def preparar_imagen(img):
 
 def predecir(img):
     preds = modelo.predict(preparar_imagen(img), verbose=0)[0]
-    top2 = np.argsort(preds)[-2:][::-1]
     return [
         (LABELS_ES.get(clases[i], clases[i]), float(preds[i]) * 100)
-        for i in top2
+        for i in np.argsort(preds)[::-1]
     ]
 
 modelo = cargar_modelo()
 clases = cargar_clases()
 
-archivo = st.file_uploader("Seleccione una imagen", type=["jpg", "jpeg", "png"])
+# ── Hero ──────────────────────────────────────────────────────────────────────
+st.markdown("""
+<div class="hero">
+    <h1>🐾 ¿Perro o Gato?</h1>
+    <p>Clasificador de imágenes con Transfer Learning — MobileNetV2</p>
+</div>
+<div style="text-align:center">
+    <span class="badge">👤 Jorge Abraham Fajardo López · 20231900189 · IA 2026</span>
+</div>
+""", unsafe_allow_html=True)
 
-if archivo:
-    imagen = Image.open(archivo)
-    st.image(imagen, caption="Imagen analizada", use_container_width=True)
+# ── Upload ────────────────────────────────────────────────────────────────────
+archivo = st.file_uploader("", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
 
-    resultados = predecir(imagen)
-    st.subheader("Resultado")
-    st.success(f"Predicción : {resultados[0][0]}")
+if not archivo:
+    st.markdown("""
+    <div class="upload-box">
+        <p style="font-size:2rem; margin:0">📂</p>
+        <p style="color:#b0aed0; margin:0.3rem 0 0">Arrastra una imagen aquí o usa el botón de arriba</p>
+        <p style="color:#5c5a7a; font-size:0.8rem; margin:0.2rem 0 0">Formatos: JPG · JPEG · PNG</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 else:
-    st.info("Cargue una imagen para iniciar la clasificación.")
+    imagen     = Image.open(archivo)
+    resultados = predecir(imagen)
+    top_label  = resultados[0][0]
+    top_conf   = resultados[0][1]
+    emoji      = EMOJIS.get(top_label, "🐾")
+
+    col1, col2 = st.columns([1, 1], gap="large")
+
+    with col1:
+        st.image(imagen, caption="Imagen analizada", use_container_width=True)
+
+    with col2:
+        st.markdown(f"""
+        <div class="result-card">
+            <div class="result-emoji">{emoji}</div>
+            <div class="result-label">{top_label}</div>
+            <div class="result-conf">Confianza: {top_conf:.1f}%</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<br>**Probabilidades**", unsafe_allow_html=True)
+        for label, prob in resultados:
+            bar_class = BAR_CLASS.get(label, "bar-fill-perro")
+            st.markdown(f"""
+            <div class="bar-label"><span>{EMOJIS.get(label,"")} {label}</span><span>{prob:.1f}%</span></div>
+            <div class="bar-track"><div class="{bar_class}" style="width:{prob:.1f}%"></div></div>
+            """, unsafe_allow_html=True)
+
+# ── Footer ────────────────────────────────────────────────────────────────────
+st.markdown("""
+<div class="footer">
+    Clase de Inteligencia Artificial · Campus Comayagua 2026 · Powered by TensorFlow & MobileNetV2
+</div>
+""", unsafe_allow_html=True)
+
